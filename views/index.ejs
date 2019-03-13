@@ -1,0 +1,71 @@
+<html lang="en">
+  <head>
+    <title>HousesForSale Zip Code Map</title>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
+    <!-- Leaflet stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" />
+  </head>
+
+  <body>
+  <div id="map" style="width: 80%; height: 300px"></div>
+
+  <div>
+    <form id="update" method="post" action="/" >
+        <input type="hidden" name="value1" value="<%= value1 %>">
+        <input type="hidden" name="value2" value="<%= value2 %>">
+        <input type="hidden" name="value3" value="<%= value3 %>">
+        <input type="hidden" name="value4" value="<%= value4 %>">
+        <h2> This is Value1 (<%= value1 %>) and This is Value2 (<%= value2 %>) </h2>
+        <h2> This is Value3 (<%= value3 %>) and This is Value4 (<%= value4 %>) </h2>
+        <button type="submit" >Change Value2</button>
+    </form>
+  </div>
+  <img src="././img.png"/>
+    <script>
+      function post(path, params, method) {
+          method = method || "post"; // Set method to post by default if not specified.
+
+          // The rest of this code assumes you are not using a library.
+          // It can be made less wordy if you use one.
+          var form = document.createElement("form");
+          form.setAttribute("method", method);
+          form.setAttribute("action", path);
+
+          for(var key in params) {
+              if(params.hasOwnProperty(key)) {
+                  var hiddenField = document.createElement("input");
+                  hiddenField.setAttribute("type", "hidden");
+                  hiddenField.setAttribute("name", key);
+                  hiddenField.setAttribute("value", params[key]);
+
+                  form.appendChild(hiddenField);
+              }
+          }
+          console.log("post")
+          document.body.appendChild(form);
+          form.submit();
+      }
+    var map =  L.map('map',{ center: [<%= clat %>,<%= clng %>], zoom: <%= zoom %>});
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+    L.geoJSON( <%- JSON.stringify(data) %>, {
+        style: function (feature) {
+            return {color: "blue"};
+        }}).addTo(map);
+    map.on('moveend', function(e) {
+      var bounds = map.getBounds();
+      var zoom = map.getZoom();
+      var clat = bounds.getCenter().lat
+      var clng = bounds.getCenter().lng
+      console.log(bounds, clat, clng)
+      bounds._northEast.lng = bounds._northEast.lng + .5
+      bounds._northEast.lat = bounds._northEast.lat + .5
+      bounds._southWest.lng = bounds._southWest.lng - .5
+      bounds._southWest.lat = bounds._southWest.lat - .5
+      var filterBounds = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat] //convert bounds back 
+      post('/', {minLat: bounds._southWest.lat, minLon:bounds._southWest.lng, maxLat:bounds._northEast.lat, maxLon:bounds._northEast.lng, clat: clat, clng: clng, zoom: zoom, value2: <%= value2 %>}); //reload map
+    });
+  </script>
+</body>
+</html>

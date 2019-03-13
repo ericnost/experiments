@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+
+<style>
+
+#map { height: 580px; }
+
+</style>
+
+</head>
+
+<body>
+
+<div id="map"></div>
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script>
+// Create variable to hold map element, give initial settings to map
+var map = L.map('map',{ center: [43.50, -80.2], zoom: 11});
+// Add OpenStreetMap tile layer to map element
+L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
+    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+// Add JSON to map
+var imageUrl = 'guelph.png'
+var imageBounds = [[43.472670, -80.328248], [43.595505, -80.151814]];
+L.imageOverlay(imageUrl, imageBounds, {opacity: .5}).addTo(map);
+</script>
+</body>
+</html>
