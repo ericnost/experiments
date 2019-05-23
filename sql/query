@@ -1,0 +1,11 @@
+CREATE TABLE data_collector ( 
+  name VARCHAR
+);
+SELECT AddGeometryColumn( 'data_collector', 'the_geom', 4326, 'GEOMETRY', 2 );
+
+SELECT row_to_json(fc) FROM (
+	SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (
+		SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry,
+		row_to_json((name, 'default')) As properties FROM data_collector As lg
+	) As f
+) As fc
