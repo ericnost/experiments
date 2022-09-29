@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "d3-scale": "^3.0.0",
+    "d3-scale": "^4.0.2",
     "dotenv": "^7.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
